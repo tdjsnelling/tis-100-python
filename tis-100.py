@@ -1,6 +1,13 @@
 # tis-100.py
 import sys
 
+'''
+ERR code 0x01: invalid instruction
+ERR code 0x02: invalid register
+ERR code 0x03: invalid label
+ERR code 0x04: invalid offset
+'''
+
 ACC = 0
 BAK = 0
 IP = 0
@@ -12,6 +19,9 @@ with open(sys.argv[1]) as f:
 
 for i in range(len(ins)):
 	ins[i] = ins[i].strip(' \t')
+
+def error(code):
+	print 'ERR at instruction %s code %s' % (IP, code)	
 
 def execute(opcode_full):
 	global ACC
@@ -33,7 +43,7 @@ def execute(opcode_full):
 			else:
 				print opcode[1]
 		else:
-			error()
+			error(0x02)
 	
 	elif opcode[0] == 'SWP':
 		ACC, BAK = BAK, ACC
@@ -51,34 +61,51 @@ def execute(opcode_full):
 		ACC = int(-ACC)
 
 	elif opcode[0] == 'JMP':
-		IP = ins.index(opcode[1])
+		try:
+			IP = ins.index(opcode[1])
+		except:
+			error(0x03)
 
 	elif opcode[0] == 'JEZ':
 		if ACC == 0:
-			IP = ins.index(opcode[1])
+			try:
+				IP = ins.index(opcode[1])
+			except:
+				error(0x03)
 
 	elif opcode[0] == 'JNZ':
 		if ACC != 0:
-			IP = ins.index(opcode[1])
+			try:
+				IP = ins.index(opcode[1])
+			except:
+				error(0x03)
 
 	elif opcode[0] == 'JGZ':
 		if ACC > 0:
-			IP = ins.index(opcode[1])
+			try:
+				IP = ins.index(opcode[1])
+			except:
+				error(0x03)
 
 	elif opcode[0] == 'JLZ':
 		if ACC < 0:
-			IP = ins.index(opcode[1])
+			try:
+				IP = ins.index(opcode[1])
+			except:
+				error(0x03)
 
 	elif opcode[0] == 'JRO':
-		if opcode[1] == 'ACC':
-			IP = ACC
-		else:
-			IP = IP + int(opcode[1])
+		try:
+			if opcode[1] == 'ACC':
+				IP = ACC
+			else:
+				IP = IP + int(opcode[1])
+		except:
+			error(0x04)
+
+	else:
+		error(0x01)
 
 while IP < len(ins):
 	execute(ins[IP])
 	IP += 1
-
-print ins
-print 'ACC', ACC
-print 'BAK', BAK
