@@ -9,16 +9,11 @@ ERR code 0x03: invalid label
 ERR code 0x04: invalid offset
 '''
 
-<<<<<<< HEAD
 # ACC & BAK registers
 ACC = 0
 BAK = 0
 
 # instruction pointer
-=======
-ACC = 0 	# ACC register
-BAK = 0 	# BAK register
->>>>>>> bf48abfc6aafb736a6aa4212f3bc35fee353c5fe
 IP = 0
 
 # list for instructions to be loaded into
@@ -117,11 +112,7 @@ def execute(opcode_full):
 		except:
 			error(0x04)
 
-<<<<<<< HEAD
-	elif opcode[0].endswith(''):
-=======
 	elif opcode[0].endswith(':'):
->>>>>>> bf48abfc6aafb736a6aa4212f3bc35fee353c5fe
 		# this is a label, do nothing
 		pass
 
