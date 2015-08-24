@@ -8,8 +8,8 @@ ERR code 0x03: invalid label
 ERR code 0x04: invalid offset
 '''
 
-ACC = 0
-BAK = 0
+ACC = 0 	# ACC register
+BAK = 0 	# BAK register
 IP = 0
 
 ins = []
@@ -62,35 +62,35 @@ def execute(opcode_full):
 
 	elif opcode[0] == 'JMP':
 		try:
-			IP = ins.index(opcode[1])
+			IP = ins.index(opcode[1] + ':')
 		except:
 			error(0x03)
 
 	elif opcode[0] == 'JEZ':
 		if ACC == 0:
 			try:
-				IP = ins.index(opcode[1])
+				IP = ins.index(opcode[1] + ':')
 			except:
 				error(0x03)
 
 	elif opcode[0] == 'JNZ':
 		if ACC != 0:
 			try:
-				IP = ins.index(opcode[1])
+				IP = ins.index(opcode[1] + ':')
 			except:
 				error(0x03)
 
 	elif opcode[0] == 'JGZ':
 		if ACC > 0:
 			try:
-				IP = ins.index(opcode[1])
+				IP = ins.index(opcode[1] + ':')
 			except:
 				error(0x03)
 
 	elif opcode[0] == 'JLZ':
 		if ACC < 0:
 			try:
-				IP = ins.index(opcode[1])
+				IP = ins.index(opcode[1] + ':')
 			except:
 				error(0x03)
 
@@ -102,6 +102,10 @@ def execute(opcode_full):
 				IP = IP + int(opcode[1])
 		except:
 			error(0x04)
+
+	elif opcode[0].endswith(':'):
+		# this is a label, do nothing
+		pass
 
 	else:
 		error(0x01)
