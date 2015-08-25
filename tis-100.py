@@ -29,7 +29,7 @@ for i in range(len(ins)):
 
 # handle errors
 def error(code):
-	print 'ERR at instruction %s code %s' % (IP, code)	
+	print 'ERR at instruction %s code %s' % (IP + 1, code)	
 
 # main execution loop
 def execute(opcode_full):
@@ -51,6 +51,8 @@ def execute(opcode_full):
 				print ACC
 			else:
 				print opcode[1]
+		elif opcode[2] == 'NIL':
+			pass
 		else:
 			error(0x02)
 	
@@ -61,10 +63,16 @@ def execute(opcode_full):
 		BAK = ACC
 
 	elif opcode[0] == 'ADD':
-		ACC += int(opcode[1])
+		if opcode[1] == 'ACC':
+			ACC += ACC
+		else:
+			ACC += int(opcode[1])
 
 	elif opcode[0] == 'SUB':
-		ACC -= int(opcode[1])
+		if opcode[1] == 'ACC':
+			ACC -= ACC
+		else:
+			ACC -= int(opcode[1])
 
 	elif opcode[0] == 'NEG':
 		ACC = int(-ACC)
@@ -116,6 +124,15 @@ def execute(opcode_full):
 		# this is a label, do nothing
 		pass
 
+	elif opcode[0].startswith('#'):
+		# this is a comment, do nothing
+		pass
+
+	elif opcode[0] == '':
+		# this is whitespace, do nothing
+		pass
+
+	# if none of the above, must be an invalid instruction
 	else:
 		error(0x01)
 
